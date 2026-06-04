@@ -1,6 +1,7 @@
 package com.msdk.aihelp.demo;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,5 +46,25 @@ public class MainActivity extends AppCompatActivity {
             tvStatus.setText("状态: 用户已设置");
             Toast.makeText(this, "用户信息已设置", Toast.LENGTH_SHORT).show();
         });
+
+        setupThemeColors();
+    }
+
+    private void setupThemeColors() {
+        View colorBlue = findViewById(R.id.color_blue);
+        View colorRed = findViewById(R.id.color_red);
+        View colorGreen = findViewById(R.id.color_green);
+        View colorPurple = findViewById(R.id.color_purple);
+
+        colorBlue.setOnClickListener(v -> applyTheme(0xFF1A73E8, "蓝色"));
+        colorRed.setOnClickListener(v -> applyTheme(0xFFE53935, "红色"));
+        colorGreen.setOnClickListener(v -> applyTheme(0xFF43A047, "绿色"));
+        colorPurple.setOnClickListener(v -> applyTheme(0xFF8E24AA, "紫色"));
+    }
+
+    private void applyTheme(int color, String name) {
+        MSDKAiHelp.setThemeColor(color);
+        tvStatus.setText("主题色: " + name);
+        Toast.makeText(this, "已切换为" + name + "主题，打开聊天或FAQ查看效果", Toast.LENGTH_SHORT).show();
     }
 }

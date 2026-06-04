@@ -38,4 +38,16 @@ public class ConfigManager {
 
     public void setLanguage(String language) { this.language = language; }
     public String getLanguage() { return language; }
+
+    public void updateThemeColor(int themeColor) {
+        if (config != null) {
+            this.config = new AiHelpConfig.Builder()
+                    .setDomain(config.getDomain())
+                    .setAppId(config.getAppId())
+                    .setAppSecret(config.getAppSecret())
+                    .setThemeColor(themeColor)
+                    .setLogoResId(config.getLogoResId())
+                    .build();
+        }
+    }
 }

@@ -105,6 +105,11 @@ public class MSDKAiHelp {
         ConfigManager.getInstance().setLanguage(language);
     }
 
+    public static void setThemeColor(int color) {
+        checkInitialized();
+        ConfigManager.getInstance().updateThemeColor(color);
+    }
+
     private static void checkInitialized() {
         if (!ConfigManager.getInstance().isInitialized()) {
             throw new IllegalStateException("MSDKAiHelp.init() must be called before using SDK");

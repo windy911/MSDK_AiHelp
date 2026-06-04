@@ -42,6 +42,52 @@
         android:text="设置用户信息"
         android:layout_marginBottom="16dp" />
 
+    <!-- Theme color switcher -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="切换主题色"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="16dp">
+
+        <View
+            android:id="@+id/color_blue"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_margin="8dp"
+            android:background="#FF1A73E8" />
+
+        <View
+            android:id="@+id/color_red"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_margin="8dp"
+            android:background="#FFE53935" />
+
+        <View
+            android:id="@+id/color_green"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_margin="8dp"
+            android:background="#FF43A047" />
+
+        <View
+            android:id="@+id/color_purple"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_margin="8dp"
+            android:background="#FF8E24AA" />
+    </LinearLayout>
+
     <TextView
         android:id="@+id/tv_status"
         android:layout_width="wrap_content"
