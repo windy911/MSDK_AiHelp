@@ -26,6 +26,7 @@ import com.msdk.aihelp.ui.ImageViewerActivity;
 import com.msdk.aihelp.ui.theme.ThemeManager;
 
 import java.io.File;
+import java.util.List;
 
 public class ChatFragment extends Fragment implements ChatManager.ChatCallback {
 
@@ -80,10 +81,8 @@ public class ChatFragment extends Fragment implements ChatManager.ChatCallback {
     private void initChat() {
         chatManager = ChatManager.getInstance();
         chatManager.setCallback(this);
+        chatManager.loadHistory();
         chatManager.connect();
-
-        adapter.setMessages(chatManager.getMessages());
-        scrollToBottom();
     }
 
     private void sendTextMessage() {
@@ -122,8 +121,12 @@ public class ChatFragment extends Fragment implements ChatManager.ChatCallback {
     public void onConnectionStateChanged(ChatManager.ConnectionState state) {}
 
     @Override
-    public void onSessionStarted(String sessionId) {
-        chatManager.loadHistory();
+    public void onSessionStarted(String sessionId) {}
+
+    @Override
+    public void onHistoryLoaded(List<Message> messages) {
+        adapter.setMessages(messages);
+        scrollToBottom();
     }
 
     @Override

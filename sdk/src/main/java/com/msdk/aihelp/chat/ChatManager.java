@@ -1,5 +1,7 @@
 package com.msdk.aihelp.chat;
 
+import android.content.SharedPreferences;
+
 import com.msdk.aihelp.config.ConfigManager;
 import com.msdk.aihelp.model.Message;
 import com.msdk.aihelp.network.ApiCallback;
@@ -26,6 +28,7 @@ public class ChatManager implements WebSocketClient.Listener {
         void onConnectionStateChanged(ConnectionState state);
         void onSessionStarted(String sessionId);
         void onSessionEnded(String reason);
+        void onHistoryLoaded(List<Message> messages);
     }
 
     private static ChatManager instance;
@@ -37,9 +40,27 @@ public class ChatManager implements WebSocketClient.Listener {
     private String currentSessionId;
     private int unreadCount;
 
+    private static final String PREF_NAME = "msdk_aihelp_chat";
+    private static final String KEY_SESSION_ID = "last_session_id";
+
     private ChatManager() {
         webSocketClient = new WebSocketClient();
         webSocketClient.setListener(this);
+        currentSessionId = getLastSessionId();
+    }
+
+    private String getLastSessionId() {
+        if (!ConfigManager.getInstance().isInitialized()) return null;
+        SharedPreferences prefs = ConfigManager.getInstance().getAppContext()
+                .getSharedPreferences(PREF_NAME, 0);
+        return prefs.getString(KEY_SESSION_ID, null);
+    }
+
+    private void saveSessionId(String sessionId) {
+        if (!ConfigManager.getInstance().isInitialized()) return;
+        ConfigManager.getInstance().getAppContext()
+                .getSharedPreferences(PREF_NAME, 0)
+                .edit().putString(KEY_SESSION_ID, sessionId).apply();
     }
 
     public static synchronized ChatManager getInstance() {
@@ -124,6 +145,7 @@ public class ChatManager implements WebSocketClient.Listener {
             ThreadUtil.runOnMain(() -> {
                 messages.clear();
                 messages.addAll(history);
+                if (callback != null) callback.onHistoryLoaded(messages);
             });
         });
     }
@@ -145,6 +167,7 @@ public class ChatManager implements WebSocketClient.Listener {
     @Override
     public void onConnected(String sessionId) {
         this.currentSessionId = sessionId;
+        saveSessionId(sessionId);
         setConnectionState(ConnectionState.CONNECTED);
         if (callback != null) callback.onSessionStarted(sessionId);
         resendPendingMessages();

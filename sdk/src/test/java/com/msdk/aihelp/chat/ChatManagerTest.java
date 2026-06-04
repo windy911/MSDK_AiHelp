@@ -31,6 +31,8 @@ public class ChatManagerTest {
             public void onSessionStarted(String sessionId) {}
             @Override
             public void onSessionEnded(String reason) {}
+            @Override
+            public void onHistoryLoaded(List<Message> messages) {}
         };
     }
 
