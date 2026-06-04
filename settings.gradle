@@ -1,0 +1,3 @@
+rootProject.name = 'MSDK_AiHelp'
+include ':sdk'
+include ':demo'
