@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="aihelp_toolbar_height">56dp</dimen>
+    <dimen name="aihelp_message_max_width">260dp</dimen>
+    <dimen name="aihelp_message_padding">12dp</dimen>
+    <dimen name="aihelp_image_size">180dp</dimen>
+    <dimen name="aihelp_text_size_body">15sp</dimen>
+    <dimen name="aihelp_text_size_caption">12sp</dimen>
+</resources>

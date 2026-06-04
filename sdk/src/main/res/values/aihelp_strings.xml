@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="aihelp_chat_title">在线客服</string>
+    <string name="aihelp_faq_title">帮助中心</string>
+    <string name="aihelp_input_hint">请输入消息…</string>
+    <string name="aihelp_send">发送</string>
+    <string name="aihelp_send_image">发送图片</string>
+    <string name="aihelp_back">返回</string>
+    <string name="aihelp_contact_us">联系客服</string>
+    <string name="aihelp_search_hint">搜索常见问题</string>
+    <string name="aihelp_helpful">有帮助</string>
+    <string name="aihelp_not_helpful">没帮助</string>
+    <string name="aihelp_typing">正在输入…</string>
+    <string name="aihelp_image_message">图片消息</string>
+    <string name="aihelp_connecting">连接中…</string>
+    <string name="aihelp_disconnected">已断开连接</string>
+    <string name="aihelp_session_ended">会话已结束</string>
+    <string name="aihelp_no_results">未找到相关问题</string>
+</resources>
