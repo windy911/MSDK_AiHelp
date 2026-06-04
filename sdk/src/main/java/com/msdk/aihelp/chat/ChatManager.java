@@ -46,14 +46,18 @@ public class ChatManager implements WebSocketClient.Listener {
     private ChatManager() {
         webSocketClient = new WebSocketClient();
         webSocketClient.setListener(this);
-        currentSessionId = getLastSessionId();
+        currentSessionId = getOrCreateSessionId();
     }
 
-    private String getLastSessionId() {
-        if (!ConfigManager.getInstance().isInitialized()) return null;
+    private String getOrCreateSessionId() {
+        if (!ConfigManager.getInstance().isInitialized()) return "local_default";
         SharedPreferences prefs = ConfigManager.getInstance().getAppContext()
                 .getSharedPreferences(PREF_NAME, 0);
-        return prefs.getString(KEY_SESSION_ID, null);
+        String saved = prefs.getString(KEY_SESSION_ID, null);
+        if (saved != null) return saved;
+        String generated = "local_" + java.util.UUID.randomUUID().toString();
+        prefs.edit().putString(KEY_SESSION_ID, generated).apply();
+        return generated;
     }
 
     private void saveSessionId(String sessionId) {
