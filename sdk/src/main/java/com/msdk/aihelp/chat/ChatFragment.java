@@ -2,10 +2,8 @@ package com.msdk.aihelp.chat;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,17 +11,20 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.msdk.aihelp.R;
 import com.msdk.aihelp.chat.adapter.MessageAdapter;
 import com.msdk.aihelp.model.Message;
 import com.msdk.aihelp.ui.ImagePickerUtil;
 import com.msdk.aihelp.ui.ImageViewerActivity;
 import com.msdk.aihelp.ui.theme.ThemeManager;
+
 import java.io.File;
 
 public class ChatFragment extends Fragment implements ChatManager.ChatCallback {
@@ -66,7 +67,7 @@ public class ChatFragment extends Fragment implements ChatManager.ChatCallback {
         recyclerMessages.setAdapter(adapter);
 
         btnSend.setOnClickListener(v -> sendTextMessage());
-        btnImage.setOnClickListener(v -> ImagePickerUtil.openGallery(getActivity()));
+        btnImage.setOnClickListener(v -> ImagePickerUtil.openGallery(this));
         btnBack.setOnClickListener(v -> getActivity().finish());
     }
 
@@ -139,27 +140,14 @@ public class ChatFragment extends Fragment implements ChatManager.ChatCallback {
         if (requestCode == ImagePickerUtil.REQUEST_IMAGE_PICK && data != null) {
             Uri uri = data.getData();
             if (uri != null) {
-                String path = getRealPathFromUri(uri);
-                if (path != null) {
-                    chatManager.sendImageMessage(new File(path));
+                File file = ImagePickerUtil.uriToFile(getContext(), uri);
+                if (file != null) {
+                    chatManager.sendImageMessage(file);
                 }
             }
         } else if (requestCode == ImagePickerUtil.REQUEST_IMAGE_CAPTURE && cameraFile != null) {
             chatManager.sendImageMessage(cameraFile);
         }
-    }
-
-    private String getRealPathFromUri(Uri uri) {
-        String[] projection = {MediaStore.Images.Media.DATA};
-        Cursor cursor = getContext().getContentResolver().query(uri, projection, null, null, null);
-        if (cursor != null) {
-            int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            cursor.moveToFirst();
-            String path = cursor.getString(columnIndex);
-            cursor.close();
-            return path;
-        }
-        return null;
     }
 
     @Override
