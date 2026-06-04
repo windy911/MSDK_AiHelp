@@ -72,18 +72,26 @@ public class ChatManager implements WebSocketClient.Listener {
     }
 
     public void sendImageMessage(File imageFile) {
+        Message msg = Message.createImage("file://" + imageFile.getAbsolutePath(), Message.Direction.SEND);
+        addMessage(msg);
+        if (callback != null) callback.onMessageReceived(msg);
+
         ThreadUtil.runOnDb(() -> {
             try {
                 File cacheDir = ConfigManager.getInstance().getAppContext().getCacheDir();
                 File compressed = ImageCompressor.compress(imageFile, cacheDir);
-                uploadAndSend(compressed);
+                uploadAndSend(compressed, msg);
             } catch (IOException e) {
                 Logger.e("Image compress failed", e);
+                ThreadUtil.runOnMain(() -> {
+                    msg.setStatus(Message.Status.FAILED);
+                    if (callback != null) callback.onMessageStatusChanged(msg.getClientMsgId(), Message.Status.FAILED);
+                });
             }
         });
     }
 
-    private void uploadAndSend(File compressedFile) {
+    private void uploadAndSend(File compressedFile, Message placeholderMsg) {
         String uploadUrl = ApiService.buildUrl(
                 ConfigManager.getInstance().getConfig().getDomain(),
                 ApiService.PATH_UPLOAD);
@@ -91,15 +99,18 @@ public class ChatManager implements WebSocketClient.Listener {
         HttpClient.getInstance().uploadFile(uploadUrl, compressedFile, new ApiCallback<String>() {
             @Override
             public void onSuccess(String imageUrl) {
-                Message msg = Message.createImage(imageUrl, Message.Direction.SEND);
-                addMessage(msg);
-                persistMessage(msg);
-                webSocketClient.send(msg);
+                placeholderMsg.setContent(imageUrl);
+                placeholderMsg.setStatus(Message.Status.SENT);
+                persistMessage(placeholderMsg);
+                webSocketClient.send(placeholderMsg);
+                if (callback != null) callback.onMessageStatusChanged(placeholderMsg.getClientMsgId(), Message.Status.SENT);
             }
 
             @Override
             public void onError(int code, String message) {
                 Logger.e("Image upload failed: " + code + " " + message, null);
+                placeholderMsg.setStatus(Message.Status.FAILED);
+                if (callback != null) callback.onMessageStatusChanged(placeholderMsg.getClientMsgId(), Message.Status.FAILED);
             }
         });
     }
