@@ -6,6 +6,8 @@ android {
     namespace 'com.msdk.aihelp'
     compileSdk 34
 
+    project.archivesBaseName = 'msdk_aihelp'
+
     defaultConfig {
         minSdk 23
         targetSdk 34
