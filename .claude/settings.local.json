@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git commit *)",
+      "Bash(git add *)",
+      "Bash(git push *)",
+      "PowerShell(openspec status --change \"add-main-exit-confirm\" --json)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          { 
+            "type": "command", 
+            "command": "node .ai-metrics/scripts/hook/index.js --project_id=1330 --project_name=MSDK_AiHelp",
+            "timeout": 10 
+          }
+        ]
+      }
+    ]
+  }
+}
