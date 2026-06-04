@@ -97,14 +97,21 @@ public class ChatManager implements WebSocketClient.Listener {
     }
 
     public void sendImageMessage(File imageFile) {
-        Message msg = Message.createImage("file://" + imageFile.getAbsolutePath(), Message.Direction.SEND);
+        File imagesDir = new File(ConfigManager.getInstance().getAppContext().getFilesDir(), "aihelp_images");
+        if (!imagesDir.exists()) imagesDir.mkdirs();
+        File persistentFile = new File(imagesDir, System.currentTimeMillis() + ".jpg");
+        copyFile(imageFile, persistentFile);
+
+        String localPath = "file://" + persistentFile.getAbsolutePath();
+        Message msg = Message.createImage(localPath, Message.Direction.SEND);
         addMessage(msg);
+        persistMessage(msg);
         if (callback != null) callback.onMessageReceived(msg);
 
         ThreadUtil.runOnDb(() -> {
             try {
                 File cacheDir = ConfigManager.getInstance().getAppContext().getCacheDir();
-                File compressed = ImageCompressor.compress(imageFile, cacheDir);
+                File compressed = ImageCompressor.compress(persistentFile, cacheDir);
                 uploadAndSend(compressed, msg);
             } catch (IOException e) {
                 Logger.e("Image compress failed", e);
@@ -135,9 +142,23 @@ public class ChatManager implements WebSocketClient.Listener {
             public void onError(int code, String message) {
                 Logger.e("Image upload failed: " + code + " " + message, null);
                 placeholderMsg.setStatus(Message.Status.FAILED);
+                persistMessage(placeholderMsg);
                 if (callback != null) callback.onMessageStatusChanged(placeholderMsg.getClientMsgId(), Message.Status.FAILED);
             }
         });
+    }
+
+    private static void copyFile(File src, File dst) {
+        try (java.io.FileInputStream in = new java.io.FileInputStream(src);
+             java.io.FileOutputStream out = new java.io.FileOutputStream(dst)) {
+            byte[] buf = new byte[4096];
+            int len;
+            while ((len = in.read(buf)) > 0) {
+                out.write(buf, 0, len);
+            }
+        } catch (IOException e) {
+            Logger.e("File copy failed", e);
+        }
     }
 
     public void loadHistory() {
