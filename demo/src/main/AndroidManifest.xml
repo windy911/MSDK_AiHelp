@@ -5,7 +5,8 @@
         android:name=".DemoApplication"
         android:label="AiHelp Demo"
         android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
-        android:allowBackup="false">
+        android:allowBackup="false"
+        android:usesCleartextTraffic="true">
         <activity
             android:name=".MainActivity"
             android:exported="true">
