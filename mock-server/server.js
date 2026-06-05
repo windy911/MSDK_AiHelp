@@ -7,6 +7,7 @@ const WebSocket = require('ws');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const os = require('os');
 
 const PORT = 3000;
 const app = express();
@@ -169,12 +170,30 @@ app.get('/', (req, res) => {
   res.json({ status: 'ok', service: 'MSDK AiHelp Mock Server' });
 });
 
+function getLocalIPs() {
+  const interfaces = os.networkInterfaces();
+  const ips = [];
+  for (const name of Object.keys(interfaces)) {
+    for (const iface of interfaces[name]) {
+      if (iface.family === 'IPv4' && !iface.internal) {
+        ips.push(iface.address);
+      }
+    }
+  }
+  return ips;
+}
+
 server.listen(PORT, () => {
+  const ips = getLocalIPs();
   console.log(`\n=== MSDK AiHelp Mock Server ===`);
   console.log(`HTTP:  http://localhost:${PORT}`);
   console.log(`WS:    ws://localhost:${PORT}/ws/chat`);
+  if (ips.length > 0) {
+    console.log(`\n本机 IP (Android 设备请使用这些地址):`);
+    ips.forEach(ip => console.log(`  http://${ip}:${PORT}`));
+  }
   console.log(`\nAndroid Demo config:`);
-  console.log(`  domain: "http://YOUR_PC_IP:${PORT}"`);
+  console.log(`  domain: "http://${ips[0] || 'YOUR_PC_IP'}:${PORT}"`);
   console.log(`  appId:  "demo"`);
   console.log(`  appSecret: "demo_secret"`);
   console.log(`\nPress Ctrl+C to stop\n`);
