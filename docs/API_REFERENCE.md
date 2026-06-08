@@ -292,6 +292,30 @@ public static void setThemeColor(int color)
 
 ---
 
+## FAQSection / FAQItem
+
+FAQ 数据模型，由后端 FAQ 接口返回，不由宿主 App 直接构造。
+
+### FAQSection
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `sectionId` | String | 分类唯一 ID |
+| `title` | String | 分类标题 |
+| `sortOrder` | int | 排序序号，数值越小越靠前 |
+| `items` | List\<FAQItem\> | 该分类下的问题列表 |
+
+### FAQItem
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `faqId` | String | 问题唯一 ID |
+| `question` | String | 问题标题 |
+| `answer` | String | 答案（HTML 富文本） |
+| `sortOrder` | int | 排序序号，数值越小越靠前 |
+
+---
+
 ## AiHelpEventListener
 
 事件监听接口。
