@@ -230,8 +230,11 @@ public static void setThemeColor(int color)
 | setUserId(String) | Builder | 是 | 游戏用户 ID |
 | setUserName(String) | Builder | 否 | 用户昵称 |
 | setServerId(String) | Builder | 否 | 服务器 ID |
-| addCustomData(String, String) | Builder | 否 | 自定义字段（键值对） |
-| build() | UserInfo | - | 构建用户对象 |
+| addCustomData(String, String) | Builder | 否 | 自定义字段（键值对），默认空 Map |
+| build() | UserInfo | - | 构建用户对象，校验 userId |
+
+**`build()` 异常：**
+- `IllegalArgumentException` — `userId` 为 null 或空字符串
 
 ---
 
