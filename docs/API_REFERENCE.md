@@ -329,6 +329,8 @@ public interface AiHelpEventListener {
 }
 ```
 
+> **线程：** 所有回调在**主线程**执行。通过 `MSDKAiHelp.setEventListener(null)` 可取消监听。
+
 | 方法 | 触发时机 |
 |------|----------|
 | onInitialized | SDK 初始化完成 |
@@ -347,6 +349,8 @@ public interface UnreadCountCallback {
     void onResult(int count);
 }
 ```
+
+> **线程：** 回调在**主线程**执行。
 
 ---
 
