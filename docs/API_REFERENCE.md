@@ -238,6 +238,60 @@ public static void setThemeColor(int color)
 
 ---
 
+## Message
+
+聊天消息对象。不由宿主 App 直接构造，通过 `ChatCallback.onMessageReceived()` 和 `ChatCallback.onHistoryLoaded()` 接收。
+
+### 枚举
+
+#### MsgType
+
+| 值 | 说明 |
+|----|------|
+| `TEXT` | 文本消息 |
+| `IMAGE` | 图片消息 |
+| `SYSTEM` | 系统提示（如"会话已开始"） |
+| `LOADING` | 加载占位符，等待 AI 回复时显示 |
+
+#### Direction
+
+| 值 | 说明 |
+|----|------|
+| `SEND` | 用户发出的消息 |
+| `RECEIVE` | 服务端收到的消息 |
+
+#### Status
+
+| 值 | 说明 |
+|----|------|
+| `SENDING` | 发送中（尚未收到服务端确认） |
+| `SENT` | 已送达 |
+| `FAILED` | 发送失败（如图片上传失败） |
+
+### 工厂方法
+
+| 方法 | 说明 | 初始 Status |
+|------|------|-------------|
+| `createText(String content, Direction direction)` | 创建文本消息 | SENDING（SEND）/ SENT（RECEIVE） |
+| `createImage(String imageUrl, Direction direction)` | 创建图片消息，content 为本地 `file://` URI 或远程 URL | SENDING（SEND）/ SENT（RECEIVE） |
+| `createSystem(String content)` | 创建系统提示，Direction 固定为 RECEIVE | SENT |
+| `createLoading()` | 创建加载占位符，Direction 固定为 RECEIVE | SENT |
+
+### 字段（Getter）
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `clientMsgId` | String | 客户端生成的唯一消息 ID（UUID） |
+| `serverMsgId` | String | 服务端分配的消息 ID，发送前为 null |
+| `msgType` | MsgType | 消息类型 |
+| `direction` | Direction | 消息方向 |
+| `content` | String | 文本内容或图片 URL |
+| `sender` | String | 发送方名称（接收消息时由服务端填充） |
+| `timestamp` | long | Unix 毫秒时间戳 |
+| `status` | Status | 发送状态 |
+
+---
+
 ## AiHelpEventListener
 
 事件监听接口。
