@@ -4,6 +4,10 @@
 
 SDK 主入口类，所有方法均为静态调用。
 
+> **线程安全：** 所有回调均在**主线程**执行。
+>
+> **调用顺序：** 除 `init()` 和 `setEventListener()` 外，所有方法必须在 `init()` 调用后才能使用，否则抛出 `IllegalStateException`。
+
 ### init
 
 ```java
@@ -19,6 +23,8 @@ public static void init(Context context, AiHelpConfig config)
 
 **异常：**
 - `IllegalArgumentException` — context 或 config 为 null
+
+**备注：** 必须在 `Application.onCreate()` 中调用。重复调用会以新配置重新初始化 SDK。
 
 ---
 
@@ -53,6 +59,9 @@ public static void openFAQ(FAQConfig faqConfig)
 |------|------|------|
 | faqConfig | 否 | FAQ 配置，可为 null |
 
+**异常：**
+- `IllegalStateException` — 未调用 `init()`
+
 ---
 
 ### setUser
@@ -67,6 +76,9 @@ public static void setUser(UserInfo userInfo)
 |------|------|
 | userInfo | 用户身份信息 |
 
+**异常：**
+- `IllegalStateException` — 未调用 `init()`
+
 ---
 
 ### clearUser
@@ -76,6 +88,9 @@ public static void clearUser()
 ```
 
 清除用户信息，用户登出时调用。
+
+**异常：**
+- `IllegalStateException` — 未调用 `init()`
 
 ---
 
@@ -90,6 +105,11 @@ public static void getUnreadCount(UnreadCountCallback callback)
 | 参数 | 说明 |
 |------|------|
 | callback | 结果回调 |
+
+**异常：**
+- `IllegalStateException` — 未调用 `init()`
+
+**备注：** 本地内存未读数 > 0 时直接通过回调返回，不发起网络请求。
 
 **示例：**
 ```java
@@ -112,6 +132,8 @@ public static void setEventListener(AiHelpEventListener listener)
 |------|------|
 | listener | 事件监听器，可为 null（取消监听） |
 
+**备注：** 传入 `null` 可取消监听。
+
 ---
 
 ### setLanguage
@@ -126,6 +148,9 @@ public static void setLanguage(String language)
 |------|------|
 | language | `"zh-CN"`, `"en"`, `"ja"` 等 |
 
+**异常：**
+- `IllegalStateException` — 未调用 `init()`
+
 ---
 
 ### setThemeColor
@@ -139,6 +164,9 @@ public static void setThemeColor(int color)
 | 参数 | 示例 |
 |------|------|
 | color | `0xFF1A73E8` (蓝色), `0xFFE53935` (红色) |
+
+**异常：**
+- `IllegalStateException` — 未调用 `init()`
 
 ---
 
