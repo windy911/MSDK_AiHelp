@@ -178,12 +178,17 @@ public static void setThemeColor(int color)
 
 | 方法 | 类型 | 必填 | 说明 |
 |------|------|------|------|
-| setDomain(String) | Builder | 是 | 后端服务域名 |
+| setDomain(String) | Builder | 是 | 后端服务域名，须包含协议，如 `https://cs.yourgame.com` |
 | setAppId(String) | Builder | 是 | 应用标识 |
 | setAppSecret(String) | Builder | 是 | 应用密钥 |
-| setThemeColor(int) | Builder | 否 | 主题色，默认 `0xFF1A73E8` |
-| setLogoResId(int) | Builder | 否 | Logo 资源 ID |
-| build() | AiHelpConfig | - | 构建配置对象 |
+| setThemeColor(int) | Builder | 否 | 主题色（ARGB），默认 `0xFF1A73E8`（蓝色） |
+| setLogoResId(int) | Builder | 否 | Logo 资源 ID，默认 `0`（不显示） |
+| build() | AiHelpConfig | - | 构建配置对象，校验必填字段 |
+
+**`build()` 异常：**
+- `IllegalArgumentException` — `domain` 为 null 或空字符串
+- `IllegalArgumentException` — `appId` 为 null 或空字符串
+- `IllegalArgumentException` — `appSecret` 为 null 或空字符串
 
 ---
 
